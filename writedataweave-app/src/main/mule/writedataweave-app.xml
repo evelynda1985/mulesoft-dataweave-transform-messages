@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="writedataweave-appFlow" doc:id="32751170-59b0-4f36-921c-1ed4f3b4dcde" >
+		<ee:transform doc:name="Transform Message-concatenate-Strings" doc:id="42400c59-3411-4d2f-8a58-1a2634b185a8" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+---
+info:{
+	fullname:("Evelyn" ++ " " ++ "Sanchez"),
+	color:("purple" ++ " " ++ "Tale")
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="writedataweave-appFlow1" doc:id="82506314-7b93-4b0f-99ef-d64dda33acfd" >
+		<ee:transform doc:name="Transform Message-from-JSON-XML" doc:id="7932e773-9373-4db7-915e-6a3704d94c8c" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+---
+info:{
+	"name":"Evelyn",
+	"age":35,
+	"cars":["Ford", "BMW", "Toyota"]
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="writedataweave-appFlow2" doc:id="8987b07c-7186-44f0-a4a5-ebcbbb6a37b4" >
+		<ee:transform doc:name="Transform Message-define-vars" doc:id="7f7c5b1b-c9dd-4910-b29b-3bf1a4f0da5e" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+var myvar = Greetings:{"Hello":"students for mule 4 course"}
+var fruitinfo = fruitinfo:{
+	"fruit":"Apple",
+	"size":"large",
+	"color":"red"
+}
+output application/xml
+---
+fruitinfo]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="writedataweave-appFlow3" doc:id="7fc30c9e-ab44-424b-af53-066de0e1ff75" >
+		<ee:transform doc:name="Transform Message-funtions-pretedermined" doc:id="830c687b-5ab9-466e-8b9c-4d28b6b53393" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+var add = result:{
+	x:avg([1,2,5]),
+	y:sum([5,6,7])
+}
+output application/json
+---
+add]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="writedataweave-appFlow4" doc:id="4b5bce4b-fad5-483d-83d5-94cb4cc5859a" >
+		<ee:transform doc:name="Transform Message-read-transform-select" doc:id="d22acc87-be03-4f39-8f9e-9dd125351bd1" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+var readxml = read("<fruitinfo>
+					  <fruit>Apple</fruit>
+					  <size>large</size>
+					  <color>red</color>
+					</fruitinfo>","application/xml")
+output application/json
+---
+{
+	select:readxml.fruitinfo.fruit
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="writedataweave-appFlow5" doc:id="84d93e31-a783-402f-b46a-142585167c45" >
+		<ee:transform doc:name="Transform Message-read-data-from-file" doc:id="535c4439-c81d-446d-947c-03528992d871" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+readUrl("classpath://example.json","application/json")]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="writedataweave-appFlow6" doc:id="09fda231-d007-4a21-83a8-ec664349b18c" >
+		<ee:transform doc:name="Transform Message-lambda-Map-convert-to-json" doc:id="bda66f4d-6582-4ab1-a984-827aab27e9b0" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	(
+		["Bob","Jhon","Lily"] map((value, index)->{
+			(index):value
+		})
+	)
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="writedataweave-appFlow7" doc:id="8feeb6a0-3b7d-48cc-a532-e0ab6afab769" >
+		<ee:transform doc:name="Transform Message-json-to-array" doc:id="58d2d069-263d-4740-b523-ee54dd94d12a" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "0": "Bob",
+  "1": "Jhon",
+  "2": "Lily"
+}pluck ((value) ->  value)]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>
